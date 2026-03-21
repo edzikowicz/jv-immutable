@@ -16,8 +16,8 @@ public final class Car implements Cloneable {
     public Car(int year, String color, List<Wheel> wheels, Engine engine) {
         this.year = year;
         this.color = color;
-        this.wheels = wheels;
-        this.engine = engine;
+        this.wheels = getCopy(wheels);
+        this.engine = engine != null ? new Engine(engine) : null;
     }
 
     //implement this class
@@ -34,6 +34,9 @@ public final class Car implements Cloneable {
     }
 
     public Engine getEngine() {
+        if (engine == null) {
+            return null;
+        }
         return engine.clone();
     }
 
@@ -58,11 +61,7 @@ public final class Car implements Cloneable {
     @Override
     public Car clone() {
         try {
-            Car copy = (Car) super.clone();
-            copy.engine = getEngine();
-            copy.wheels = getCopy(wheels);
-            return copy;
-
+            return (Car) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException("Can't create object clone", e);
         }
@@ -71,7 +70,9 @@ public final class Car implements Cloneable {
     private static List<Wheel> getCopy(List<Wheel> wheels) {
         List<Wheel> copy = new ArrayList<>(wheels.size());
         for (Wheel wheel : wheels) {
-            copy.add(wheel.clone());
+            if (wheel != null) {
+                copy.add(wheel.clone());
+            }
         }
         return copy;
     }
@@ -87,7 +88,11 @@ public final class Car implements Cloneable {
     }
 
     public Car changeEngine(Engine engine) {
-        return new Car(year, color, wheels, engine);
+        try {
+            return new Car(year, color, wheels, engine);
+        } catch (NullPointerException e) {
+            throw new RuntimeException("Engine cannot be null");
+        }
     }
 
     public Car changeColor(String newColor) {
@@ -96,7 +101,9 @@ public final class Car implements Cloneable {
 
     public Car addWheel(Wheel newWheel) {
         List<Wheel> newWheels = new ArrayList<>(wheels);
-        newWheels.add(newWheel);
+        if (newWheel != null) {
+            newWheels.add(newWheel);
+        }
         return new Car(year, color, newWheels, engine);
     }
 }

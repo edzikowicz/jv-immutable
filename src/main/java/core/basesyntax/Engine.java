@@ -2,13 +2,18 @@ package core.basesyntax;
 
 import java.util.Objects;
 
-public class Engine implements Cloneable {
+public final class Engine implements Cloneable {
     private int horsePower;
     private String manufacturer;
 
     public Engine(int horsePower, String manufacturer) {
         this.horsePower = horsePower;
         this.manufacturer = manufacturer;
+    }
+
+    public Engine(Engine engine) {
+        this.horsePower = engine.horsePower;
+        this.manufacturer = engine.manufacturer;
     }
 
     //implement this class
